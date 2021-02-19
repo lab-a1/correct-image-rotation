@@ -1,13 +1,12 @@
 import torch
 import os
 from torch.utils.data import Dataset
-import pandas as pd
 import cv2
 
 
 class RotatedImagesDataset(Dataset):
-    def __init__(self, images_path, ground_truth_path, transform=None):
-        self.ground_truth = pd.read_csv(ground_truth_path)
+    def __init__(self, images_path, ground_truth, transform=None):
+        self.ground_truth = ground_truth
         self.images_path = images_path
         self.transform = transform
 

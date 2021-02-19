@@ -15,7 +15,9 @@ class RotatedImagesDataset(Dataset):
         return len(self.ground_truth)
 
     def __getitem__(self, index):
-        if torch.is_tensor(index):
+        if isinstance(index, slice):
+            return [self[i] for i in range(index.start, index.stop)]
+        elif torch.is_tensor(index):
             index = index.tolist()
 
         item = self.ground_truth.loc[index]

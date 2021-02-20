@@ -1,7 +1,8 @@
 import pandas as pd
-from data_loader import RotatedImagesDataset
 import albumentations as A
 from albumentations.pytorch import ToTensorV2
+from data_loader import RotatedImagesDataset
+from network import CNNNetwork
 
 
 ground_truth = pd.read_csv("../dataset/ground-truth.csv")
@@ -31,3 +32,14 @@ validation_dataset_loader = RotatedImagesDataset(
 test_dataset_loader = RotatedImagesDataset(
     "../dataset/images", ground_truth_test, dataset_transform
 )
+
+params = {
+    "device": "cuda",
+    "learning_rate": 1e-4,
+    "batch_size": 64,
+    "epochs": 20,
+}
+
+model = CNNNetwork()
+model = model.to(params["device"])
+

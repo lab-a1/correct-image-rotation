@@ -1,6 +1,3 @@
-dataset/
-dataset.tar.gz
-
 # Created by https://www.toptal.com/developers/gitignore/api/python,linux,jupyternotebooks
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,linux,jupyternotebooks
 
@@ -171,3 +168,6 @@ dmypy.json
 .prof
 
 # End of https://www.toptal.com/developers/gitignore/api/python,linux,jupyternotebooks
+
+dataset/
+!src/lib

@@ -1,9 +1,15 @@
 import pandas as pd
 import albumentations as A
 from albumentations.pytorch import ToTensorV2
+import torch.backends.cudnn as cudnn
+from torch.utils.data import DataLoader
 from data_loader import RotatedImagesDataset
 from network import CNNNetwork
+from train import train
 
+
+# Enables the inbuilt cuDNN auto-tuner to find the best algorithm to use for your hardware.
+cudnn.benchmark = True
 
 ground_truth = pd.read_csv("../dataset/ground-truth.csv")
 ground_truth = ground_truth.sample(frac=1)
@@ -23,13 +29,13 @@ dataset_transform = A.Compose(
         ToTensorV2(),
     ]
 )
-train_dataset_loader = RotatedImagesDataset(
+train_dataset = RotatedImagesDataset(
     "../dataset/images", ground_truth_train, dataset_transform
 )
-validation_dataset_loader = RotatedImagesDataset(
+validation_dataset = RotatedImagesDataset(
     "../dataset/images", ground_truth_validation, dataset_transform
 )
-test_dataset_loader = RotatedImagesDataset(
+test_dataset = RotatedImagesDataset(
     "../dataset/images", ground_truth_test, dataset_transform
 )
 
@@ -38,8 +44,35 @@ params = {
     "learning_rate": 1e-4,
     "batch_size": 64,
     "epochs": 20,
+    "num_workers": 4,
 }
+
+train_dataset_loader = DataLoader(
+    train_dataset,
+    batch_size=params["batch_size"],
+    shuffle=True,
+    num_workers=params["num_workers"],
+    pin_memory=True,
+)
+validation_dataset_loader = DataLoader(
+    validation_dataset,
+    batch_size=params["batch_size"],
+    shuffle=True,
+    num_workers=params["num_workers"],
+    pin_memory=True,
+)
+test_dataset_loader = DataLoader(
+    test_dataset,
+    batch_size=params["batch_size"],
+    shuffle=False,
+    num_workers=params["num_workers"],
+    pin_memory=True,
+)
 
 model = CNNNetwork()
 model = model.to(params["device"])
+criterion = nn.BCEWithLogitsLoss().to(params["device"])
+optimizer = torch.optim.Adam(model.parameters(), lr=params["learning_rate"])
 
+for epoch in range(1, params["epochs"] + 1):
+    train(model, params, train_dataset_loader, criterion, optimizer, epoch)

@@ -170,5 +170,6 @@ dmypy.json
 # End of https://www.toptal.com/developers/gitignore/api/python,linux,jupyternotebooks
 
 dataset/
-!src/lib
 saved_model/
+!dataset/test
+!src/lib

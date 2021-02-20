@@ -5,7 +5,7 @@ import cv2
 
 
 class RotatedImagesDataset(Dataset):
-    def __init__(self, images_path, ground_truth, transform):
+    def __init__(self, images_path, ground_truth, transform=None):
         self.ground_truth = ground_truth
         self.images_path = images_path
         self.transform = transform
@@ -33,5 +33,7 @@ class RotatedImagesDataset(Dataset):
         image = cv2.imread(image_path)
         # OpenCV reads by default as BGR.
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        image = self.transform(image=image)["image"]
+
+        if self.transform:
+            image = self.transform(image=image)["image"]
         return image, self.label_to_index[item[1]]

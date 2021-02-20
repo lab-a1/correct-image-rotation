@@ -1,4 +1,3 @@
-import torch
 from tqdm import tqdm
 from lib.metric_monitor import MetricMonitor
 from lib.metrics import accuracy

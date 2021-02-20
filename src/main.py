@@ -8,6 +8,8 @@ import torch.optim as optim
 from data_loader import RotatedImagesDataset
 from network import CNNNetwork
 from train import train
+from validation import validation
+from lib.utils import split_dataset
 
 
 # Enables the inbuilt cuDNN auto-tuner to find the best algorithm to use for your hardware.
@@ -17,10 +19,9 @@ ground_truth = pd.read_csv("../dataset/ground-truth.csv")
 ground_truth = ground_truth.sample(frac=1)
 ground_truth.reset_index(inplace=True, drop=True)
 
-validation_dataset_size = int(len(ground_truth) * 0.2)
-ground_truth_train = ground_truth[:validation_dataset_size]
-ground_truth_validation = ground_truth[validation_dataset_size:-10]
-ground_truth_test = ground_truth[-10:]
+train_dataset, validation_dataset, test_dataset = split_dataset(
+    ground_truth, 0.1, 0.1
+)
 
 dataset_transform = A.Compose(
     [
@@ -32,20 +33,20 @@ dataset_transform = A.Compose(
     ]
 )
 train_dataset = RotatedImagesDataset(
-    "../dataset/images", ground_truth_train, dataset_transform
+    "../dataset/images", train_dataset, dataset_transform
 )
 validation_dataset = RotatedImagesDataset(
-    "../dataset/images", ground_truth_validation, dataset_transform
+    "../dataset/images", validation_dataset, dataset_transform
 )
 test_dataset = RotatedImagesDataset(
-    "../dataset/images", ground_truth_test, dataset_transform
+    "../dataset/images", test_dataset, dataset_transform
 )
 
 params = {
     "device": "cuda",
     "learning_rate": 1e-4,
     "batch_size": 16,
-    "epochs": 1,
+    "epochs": 2,
     "num_workers": 4,
 }
 
@@ -78,3 +79,4 @@ optimizer = optim.Adam(model.parameters(), lr=params["learning_rate"])
 
 for epoch in range(1, params["epochs"] + 1):
     train(model, params, train_dataset_loader, criterion, optimizer, epoch)
+    validation(model, params, validation_dataset_loader, criterion, epoch)

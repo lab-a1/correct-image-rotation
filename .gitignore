@@ -171,3 +171,4 @@ dmypy.json
 
 dataset/
 !src/lib
+saved_model/

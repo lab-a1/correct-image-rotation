@@ -1,3 +1,5 @@
+import os
+import torch
 import pandas as pd
 import albumentations as A
 from albumentations.pytorch import ToTensorV2
@@ -45,8 +47,8 @@ test_dataset = RotatedImagesDataset(
 params = {
     "device": "cuda",
     "learning_rate": 1e-4,
-    "batch_size": 16,
-    "epochs": 2,
+    "batch_size": 32,
+    "epochs": 16,
     "num_workers": 4,
 }
 
@@ -80,3 +82,10 @@ optimizer = optim.Adam(model.parameters(), lr=params["learning_rate"])
 for epoch in range(1, params["epochs"] + 1):
     train(model, params, train_dataset_loader, criterion, optimizer, epoch)
     validation(model, params, validation_dataset_loader, criterion, epoch)
+
+model_path = "../saved_model"
+if not os.path.exists(model_path):
+    os.mkdir(model_path)
+torch.save(model.state_dict(), os.path.join(model_path, "trained_model.pt"))
+
+print("Model saved.")

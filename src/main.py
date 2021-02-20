@@ -11,6 +11,7 @@ from data_loader import RotatedImagesDataset
 from network import CNNNetwork
 from train import train
 from validation import validation
+from test import test
 from lib.utils import split_dataset
 
 
@@ -34,6 +35,7 @@ dataset_transform = A.Compose(
         ToTensorV2(),
     ]
 )
+test_dataset_transform = A.Compose([ToTensorV2()])
 train_dataset = RotatedImagesDataset(
     "../dataset/images", train_dataset, dataset_transform
 )
@@ -41,14 +43,14 @@ validation_dataset = RotatedImagesDataset(
     "../dataset/images", validation_dataset, dataset_transform
 )
 test_dataset = RotatedImagesDataset(
-    "../dataset/images", test_dataset, dataset_transform
+    "../dataset/images", test_dataset, test_dataset_transform
 )
 
 params = {
     "device": "cuda",
     "learning_rate": 1e-4,
-    "batch_size": 32,
-    "epochs": 16,
+    "batch_size": 64,
+    "epochs": 10,
     "num_workers": 4,
 }
 
@@ -82,6 +84,7 @@ optimizer = optim.Adam(model.parameters(), lr=params["learning_rate"])
 for epoch in range(1, params["epochs"] + 1):
     train(model, params, train_dataset_loader, criterion, optimizer, epoch)
     validation(model, params, validation_dataset_loader, criterion, epoch)
+test(model, params, test_dataset_loader, criterion)
 
 model_path = "../saved_model"
 if not os.path.exists(model_path):

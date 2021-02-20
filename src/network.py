@@ -24,7 +24,6 @@ class CNNNetwork(nn.Module):
     def forward(self, x):
         out = self.pool(F.relu(self.conv1(x)))
         out = self.pool(F.relu(self.conv2(out)))
-        print(out.shape)
         # Flatten.
         out = out.view(out.size(0), -1)
         out = F.relu(self.fc1(out))

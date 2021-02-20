@@ -45,7 +45,7 @@ params = {
     "device": "cuda",
     "learning_rate": 1e-4,
     "batch_size": 16,
-    "epochs": 20,
+    "epochs": 1,
     "num_workers": 4,
 }
 

@@ -3,6 +3,8 @@ import albumentations as A
 from albumentations.pytorch import ToTensorV2
 import torch.backends.cudnn as cudnn
 from torch.utils.data import DataLoader
+import torch.nn as nn
+import torch.optim as optim
 from data_loader import RotatedImagesDataset
 from network import CNNNetwork
 from train import train
@@ -42,7 +44,7 @@ test_dataset = RotatedImagesDataset(
 params = {
     "device": "cuda",
     "learning_rate": 1e-4,
-    "batch_size": 64,
+    "batch_size": 16,
     "epochs": 20,
     "num_workers": 4,
 }
@@ -71,8 +73,8 @@ test_dataset_loader = DataLoader(
 
 model = CNNNetwork()
 model = model.to(params["device"])
-criterion = nn.BCEWithLogitsLoss().to(params["device"])
-optimizer = torch.optim.Adam(model.parameters(), lr=params["learning_rate"])
+criterion = nn.CrossEntropyLoss()
+optimizer = optim.Adam(model.parameters(), lr=params["learning_rate"])
 
 for epoch in range(1, params["epochs"] + 1):
     train(model, params, train_dataset_loader, criterion, optimizer, epoch)

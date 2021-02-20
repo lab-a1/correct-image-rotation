@@ -9,6 +9,15 @@ class RotatedImagesDataset(Dataset):
         self.ground_truth = ground_truth
         self.images_path = images_path
         self.transform = transform
+        self.label_to_index = {
+            "upright": 0,
+            "rotated_right": 1,
+            "upside_down": 2,
+            "rotated_left": 3,
+        }
+        self.index_to_label = {
+            self.label_to_index[x]: x for x in self.label_to_index
+        }
 
     def __len__(self):
         return len(self.ground_truth)
@@ -27,4 +36,4 @@ class RotatedImagesDataset(Dataset):
 
         if self.transform:
             image = self.transform(image=image)["image"]
-        return image, item[1]
+        return image, self.label_to_index[item[1]]

@@ -1,3 +1,6 @@
+from collections import defaultdict
+
+
 class MetricMonitor:
     def __init__(self, float_precision=3):
         self.float_precision = float_precision
@@ -16,11 +19,7 @@ class MetricMonitor:
     def __str__(self):
         return " | ".join(
             [
-                "{metric_name}: {avg:.{float_precision}f}".format(
-                    metric_name=metric_name,
-                    avg=metric["avg"],
-                    float_precision=self.float_precision,
-                )
+                f"{metric_name}: {metric['avg']:.{self.float_precision}f}"
                 for (metric_name, metric) in self.metrics.items()
             ]
         )

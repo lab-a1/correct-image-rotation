@@ -1,3 +1,4 @@
+import torch
 from tqdm import tqdm
 from lib.metric_monitor import MetricMonitor
 from lib.metrics import accuracy
@@ -8,7 +9,7 @@ def train(model, params, train_dataset_loader, criterion, optimizer, epoch):
     model.train()
     stream = tqdm(train_dataset_loader)
     for i, (images, target) in enumerate(stream, start=1):
-        images = images.to(params["device"], non_blocking=True)
+        images = images.to(params["device"], non_blocking=True).float()
         target = target.to(params["device"], non_blocking=True)
         output = model(images)
         loss = criterion(output, target)

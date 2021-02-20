@@ -18,3 +18,14 @@ tar -xzvf dataset.tar.gz -C dataset
 cd src
 python main.py
 ```
+
+## Requirements
+
+Make sure you have the following required libraries installed.
+
+- [Albumentations](https://github.com/albumentations-team/albumentations)
+- [Matplotlib](https://github.com/matplotlib/matplotlib)
+- [OpenCV](https://pypi.org/project/opencv-python)
+- [Pandas](https://github.com/pandas-dev/pandas)
+- [PyTorch](https://github.com/pytorch/pytorch)
+- [tqdm](https://github.com/tqdm/tqdm)
